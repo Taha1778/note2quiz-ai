@@ -63,23 +63,27 @@ streamlit run app.py
 The app uses this default model:
 
 ```text
-Qwen/Qwen2.5-7B-Instruct-1M
+Qwen/Qwen2.5-7B-Instruct
 ```
 
 For deployment, add these Streamlit secrets:
 
 ```toml
 HF_TOKEN = "your_hugging_face_token"
-HF_MODEL_ID = "Qwen/Qwen2.5-7B-Instruct-1M"
+HF_MODEL_ID = "Qwen/Qwen2.5-7B-Instruct"
+HF_PROVIDER = "auto"
 ```
 
-Optional:
+If this model/provider pair does not work on your Hugging Face account, try one of the model choices shown in the app sidebar:
 
-```toml
-HF_PROVIDER = "your-provider-name"
+```text
+Qwen/Qwen2.5-7B-Instruct
+openai/gpt-oss-20b
+Qwen/Qwen3.5-9B
+meta-llama/Llama-3.1-8B-Instruct
 ```
 
-Leave `HF_PROVIDER` unset if you want Hugging Face to choose the default route.
+Use `HF_PROVIDER = "auto"` first. If it still fails, choose a provider enabled on your Hugging Face account, such as `together`, `novita`, or `nscale`.
 
 ## Testing Checklist
 

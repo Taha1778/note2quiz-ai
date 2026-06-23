@@ -2,6 +2,9 @@ import streamlit as st
 
 from utils.ai_generator import (
     DEFAULT_MODEL_ID,
+    MODEL_CHOICES,
+    PROVIDER_CHOICES,
+    UNSUPPORTED_MODEL_REPLACEMENTS,
     build_study_guide_prompt,
     generate_study_guide,
 )
@@ -62,14 +65,29 @@ hf_token = get_secret("HF_TOKEN")
 if not hf_token:
     hf_token = st.sidebar.text_input("Hugging Face token", type="password")
 
-model_id = get_secret("HF_MODEL_ID", DEFAULT_MODEL_ID)
-model_id = st.sidebar.text_input("Hugging Face model", value=model_id)
+configured_model_id = get_secret("HF_MODEL_ID", DEFAULT_MODEL_ID)
+if configured_model_id in UNSUPPORTED_MODEL_REPLACEMENTS:
+    st.sidebar.warning(
+        f"{configured_model_id} is not supported by Hugging Face Inference Providers. "
+        f"Using {UNSUPPORTED_MODEL_REPLACEMENTS[configured_model_id]} instead."
+    )
+    configured_model_id = UNSUPPORTED_MODEL_REPLACEMENTS[configured_model_id]
 
-hf_provider = get_secret("HF_PROVIDER", "")
-hf_provider = st.sidebar.text_input(
-    "Hugging Face provider (optional)",
-    value=hf_provider,
-    help="Leave empty to let Hugging Face choose the default route.",
+model_options = list(dict.fromkeys([configured_model_id, *MODEL_CHOICES]))
+model_id = st.sidebar.selectbox(
+    "Hugging Face model",
+    model_options,
+    index=0,
+    help="Choose a model that appears in the Hugging Face Inference Providers catalog.",
+)
+
+configured_provider = get_secret("HF_PROVIDER", "auto") or "auto"
+provider_options = list(dict.fromkeys([configured_provider, *PROVIDER_CHOICES]))
+hf_provider = st.sidebar.selectbox(
+    "Hugging Face provider",
+    provider_options,
+    index=0,
+    help="Use auto first. If it fails, try together for Qwen or another provider enabled on your account.",
 )
 
 difficulty = st.sidebar.selectbox(
@@ -178,7 +196,7 @@ if st.button("Generate Study Guide", type="primary"):
                 lecture_text=model_text,
                 api_key=hf_token,
                 model_id=model_id,
-                provider=hf_provider.strip() or None,
+                provider=hf_provider,
                 difficulty=difficulty,
                 mcq_count=mcq_count,
                 output_options=output_options,

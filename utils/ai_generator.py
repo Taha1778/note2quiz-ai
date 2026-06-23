@@ -1,7 +1,26 @@
 from huggingface_hub import InferenceClient
 
 
-DEFAULT_MODEL_ID = "Qwen/Qwen2.5-7B-Instruct-1M"
+DEFAULT_MODEL_ID = "Qwen/Qwen2.5-7B-Instruct"
+UNSUPPORTED_MODEL_REPLACEMENTS = {
+    "Qwen/Qwen2.5-7B-Instruct-1M": DEFAULT_MODEL_ID,
+}
+MODEL_CHOICES = [
+    "Qwen/Qwen2.5-7B-Instruct",
+    "openai/gpt-oss-20b",
+    "Qwen/Qwen3.5-9B",
+    "meta-llama/Llama-3.1-8B-Instruct",
+]
+PROVIDER_CHOICES = [
+    "auto",
+    "together",
+    "novita",
+    "nscale",
+    "groq",
+    "fireworks-ai",
+    "ovhcloud",
+    "deepinfra",
+]
 
 
 def build_study_guide_prompt(lecture_text, difficulty, mcq_count, output_options):
