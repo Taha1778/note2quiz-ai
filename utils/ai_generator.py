@@ -19,7 +19,9 @@ PROVIDER_CHOICES = [
     "groq",
     "fireworks-ai",
     "ovhcloud",
-    "deepinfra",
+    "hf-inference",
+    "nebius",
+    "sambanova",
 ]
 
 
@@ -85,6 +87,32 @@ def _message_content(response):
         return message.get("content", "")
 
     return str(message)
+
+
+def format_generation_error(error):
+    message = str(error)
+    lower_message = message.lower()
+
+    if "does not have sufficient permissions" in lower_message or "insufficient permissions" in lower_message:
+        return (
+            "Your Hugging Face token is missing Inference Providers permission. "
+            "Create a new fine-grained token and enable 'Make calls to Inference Providers'."
+        )
+
+    if "model_not_supported" in lower_message or "not supported by any provider" in lower_message:
+        return (
+            "This model is not available through your enabled Hugging Face providers. "
+            "Try provider 'auto' with model 'Qwen/Qwen2.5-7B-Instruct' or "
+            "'openai/gpt-oss-20b'."
+        )
+
+    if "payment" in lower_message or "billing" in lower_message:
+        return (
+            "Hugging Face rejected the request because billing or free credits are not available "
+            "for the selected provider. Try another provider/model or check your Hugging Face account."
+        )
+
+    return f"Hugging Face generation failed: {message}"
 
 
 def generate_study_guide(

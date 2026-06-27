@@ -6,6 +6,7 @@ from utils.ai_generator import (
     PROVIDER_CHOICES,
     UNSUPPORTED_MODEL_REPLACEMENTS,
     build_study_guide_prompt,
+    format_generation_error,
     generate_study_guide,
 )
 from utils.file_reader import extract_text_from_upload
@@ -202,7 +203,7 @@ if st.button("Generate Study Guide", type="primary"):
                 output_options=output_options,
             )
         except Exception as error:
-            st.error(f"Hugging Face generation failed: {error}")
+            st.error(format_generation_error(error))
             st.stop()
 
     st.success("Study guide generated successfully.")

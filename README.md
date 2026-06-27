@@ -83,7 +83,7 @@ Qwen/Qwen3.5-9B
 meta-llama/Llama-3.1-8B-Instruct
 ```
 
-Use `HF_PROVIDER = "auto"` first. If it still fails, choose a provider enabled on your Hugging Face account, such as `together`, `novita`, or `nscale`.
+Use `HF_PROVIDER = "auto"` first. If it still fails, choose a provider enabled on your Hugging Face account, such as `together`, `novita`, `nscale`, `groq`, `fireworks-ai`, `hf-inference`, or `sambanova`.
 
 ## Testing Checklist
 
